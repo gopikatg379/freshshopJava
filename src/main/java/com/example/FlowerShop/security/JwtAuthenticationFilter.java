@@ -24,6 +24,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private UserService userService; // ✅ Service to load user details
+    @Autowired
+    private TokenBlacklist tokenBlacklist;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -38,6 +40,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7); // Remove "Bearer " prefix
+        if (tokenBlacklist.isBlacklisted(token)) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is invalid");
+            return;
+        }
         String email = jwtUtil.extractEmail(token); // Extract email from token
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {

@@ -2,6 +2,7 @@ package com.example.FlowerShop.controller;
 
 import com.example.FlowerShop.Services.UserService;
 import com.example.FlowerShop.models.User;
+import com.example.FlowerShop.security.TokenBlacklist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private TokenBlacklist tokenBlacklist;
     @PostMapping("register")
     public ResponseEntity<String>registerUser(
             @RequestParam("name") String name,
@@ -34,5 +37,14 @@ public class UserController {
     @GetMapping("all")
     public ResponseEntity<List<User>> allUser(){
         return userService.allUser();
+    }
+
+    @PostMapping("logout")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token){
+        String jwtToken = token.substring(7);
+        tokenBlacklist.addToBlacklist(jwtToken);
+
+        return ResponseEntity.ok("Logged out successfully");
+
     }
 }
