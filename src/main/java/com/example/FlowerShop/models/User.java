@@ -3,6 +3,8 @@ package com.example.FlowerShop.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Table(name = "user_table")
 @Data
@@ -10,18 +12,20 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer user_id;
+    private Integer userId;
     private String name;
     private String email;
     private String password;
     private String image;
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<Cart> carts;
 
-    public Integer getUser_id() {
-        return user_id;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+    public void setUserId(Integer user_id) {
+        this.userId = user_id;
     }
 
     public String getName() {

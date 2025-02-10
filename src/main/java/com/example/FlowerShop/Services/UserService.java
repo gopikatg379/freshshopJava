@@ -3,6 +3,7 @@ package com.example.FlowerShop.Services;
 import com.example.FlowerShop.Dao.UserDao;
 import com.example.FlowerShop.models.User;
 import com.example.FlowerShop.security.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -77,6 +78,8 @@ public class UserService implements UserDetailsService{
     public ResponseEntity<List<User>> allUser() {
         return new ResponseEntity<>(userDao.findAll(),HttpStatus.OK);
     }
+
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userDao.findByEmail(email)
@@ -87,5 +90,9 @@ public class UserService implements UserDetailsService{
                 .password(user.getPassword()) // Password stored in DB
                 .roles("USER") // Assign default role
                 .build();
+    }
+
+    public Optional<User> getUserByEmail(String email) {
+        return userDao.findByEmail(email) ;
     }
 }

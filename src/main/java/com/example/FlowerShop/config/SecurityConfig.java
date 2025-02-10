@@ -39,8 +39,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ Explicitly enable CORS here
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/register", "/user/login", "/user/all", "/uploads/**").permitAll()
-                        .requestMatchers("/flowerShop/add/flower").authenticated()
+                        .requestMatchers("/user/register", "/user/login","/user/profile", "/user/all", "/uploads/**").permitAll()
+                        .requestMatchers("/flowerShop/add/flower","/flowerShop/get/flowers").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

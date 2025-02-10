@@ -34,6 +34,7 @@ public class FlowerController {
     }
 
     @GetMapping("get/flowers")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<Flower>> getFlowers(){
         return flowerService.getFlower();
     }
@@ -41,5 +42,10 @@ public class FlowerController {
     @GetMapping("get/one/{flower_id}")
     public ResponseEntity<Optional<Flower>> getOneFlower(@PathVariable Integer flower_id){
         return flowerService.getOneFlower(flower_id);
+    }
+
+    @GetMapping("search")
+    public ResponseEntity<List<Flower>> searchFlower(@RequestParam String flower){
+        return flowerService.searchFlower(flower);
     }
 }

@@ -9,27 +9,27 @@ import lombok.Data;
 public class Flower {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer flower_id;
-    private String flower_name;
+    private Integer flowerId;
+    private String flowerName;
     private String color;
     private Double price;
     private String description;
     private String image;
 
     public Integer getFlower_id() {
-        return flower_id;
+        return flowerId;
     }
 
     public void setFlower_id(Integer flower_id) {
-        this.flower_id = flower_id;
+        this.flowerId = flower_id;
     }
 
     public String getFlower_name() {
-        return flower_name;
+        return flowerName;
     }
 
     public void setFlower_name(String flower_name) {
-        this.flower_name = flower_name;
+        this.flowerName = flower_name;
     }
 
     public String getColor() {

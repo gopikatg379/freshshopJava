@@ -46,4 +46,8 @@ public class FlowerService {
     public ResponseEntity<Optional<Flower>> getOneFlower(Integer flower_id) {
         return new ResponseEntity<>(flowerDao.findById(flower_id),HttpStatus.OK);
     }
+
+    public ResponseEntity<List<Flower>> searchFlower(String flower) {
+        return new ResponseEntity<>(flowerDao.findByFlowerNameContainingIgnoreCase(flower),HttpStatus.OK);
+    }
 }
