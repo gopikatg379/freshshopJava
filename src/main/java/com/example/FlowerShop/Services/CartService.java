@@ -29,37 +29,38 @@ public class CartService {
     @Autowired
     private FlowerDao flowerDao;
 
-    public ResponseEntity<String> addCart(Integer userId, Integer flowerId) {
-        User user = userDao.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        Flower flower = flowerDao.findById(flowerId)
-                .orElseThrow(() -> new RuntimeException("Flower not found"));
+    public ResponseEntity<String> addToCart(Integer userId, Integer flowerId) {
+        Optional<User> userOptional = userDao.findById(userId);
+        Optional<Flower> flowerOptional = flowerDao.findById(flowerId);
 
-        Cart cart = cartDao.findByUser(user).orElseGet(()->{
+        User user = userOptional.get();
+        Flower flower = flowerOptional.get();
+
+        Cart cart = cartDao.findByUser(user).orElseGet(() -> {
             Cart newCart = new Cart();
             newCart.setUser(user);
             return cartDao.save(newCart);
         });
-        if (cart.getCartItems() == null) {
-            cart.setCartItems(new ArrayList<>()); // ✅ Initialize if null
-        }
-        Optional<CartItems> existingItem = cart.getCartItems().stream()
-                .filter(item -> item.getFlower().equals(flower))
-                .findFirst();
 
-        if (existingItem.isPresent()) {
-            CartItems cartItem = existingItem.get();
+        Optional<CartItems> existingCartItem = cartItemDao.findByCartAndFlower(cart, flower);
+
+        if (existingCartItem.isPresent()) {
+            CartItems cartItem = existingCartItem.get();
             cartItem.setQuantity(cartItem.getQuantity() + 1);
             cartItemDao.save(cartItem);
         } else {
-            CartItems cartItem = new CartItems();
-            cartItem.setCart(cart);
-            cartItem.setFlower(flower);
-            cartItem.setQuantity(1);
-            cartItemDao.save(cartItem);
+            CartItems newCartItem = new CartItems();
+            newCartItem.setCart(cart);
+            newCartItem.setFlower(flower);
+            newCartItem.setQuantity(1);
+            cartItemDao.save(newCartItem);
         }
-        return new ResponseEntity<>("added", HttpStatus.OK);
+
+        cartDao.save(cart);
+
+        return new ResponseEntity<>("Item added to cart", HttpStatus.OK);
     }
+
 
     public ResponseEntity<List<Cart>> viewCart(Integer userId) {
         User user = userDao.findById(userId)
@@ -67,5 +68,10 @@ public class CartService {
 
         Optional<Cart> cart = cartDao.findByUser(user);
         return new ResponseEntity<>(cart.map(List::of).orElse(Collections.emptyList()),HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> deleteCart(Integer cartId) {
+        cartItemDao.deleteById(cartId);
+        return new ResponseEntity<>("deleted",HttpStatus.OK);
     }
 }

@@ -17,8 +17,8 @@ public class User {
     private String email;
     private String password;
     private String image;
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    private List<Cart> carts;
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private Cart cart;
 
     public Integer getUserId() {
         return userId;

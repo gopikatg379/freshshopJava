@@ -1,5 +1,6 @@
 package com.example.FlowerShop.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,6 +14,7 @@ public class CartItems {
 
     @ManyToOne
     @JoinColumn(name = "cart_id",nullable = false)
+    @JsonBackReference
     private Cart cart;
 
     @ManyToOne

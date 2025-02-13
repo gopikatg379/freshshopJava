@@ -1,8 +1,10 @@
 package com.example.FlowerShop.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,12 +15,13 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer cartId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id",nullable = false)
+    @OneToOne
+    @JoinColumn(name = "user_id",nullable = false,unique = true)
     private User user;
 
-    @OneToMany(mappedBy = "cart",cascade = CascadeType.ALL)
-    private List<CartItems> cartItems;
+    @OneToMany(mappedBy = "cart",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<CartItems> cartItems = new ArrayList<>();
 
     public Integer getCartId() {
         return cartId;
@@ -37,6 +40,9 @@ public class Cart {
     }
 
     public List<CartItems> getCartItems() {
+        if (cartItems == null) {
+            cartItems = new ArrayList<>();  // ✅ Ensure it's never null
+        }
         return cartItems;
     }
 

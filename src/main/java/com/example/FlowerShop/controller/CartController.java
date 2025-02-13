@@ -35,7 +35,7 @@ public class CartController {
     private ResponseEntity<String> addCart(@RequestHeader("Authorization") String token, @RequestParam Integer flowerId) {
         String jwt = token.substring(7);
         Integer userId = getUserIdFromToken(jwt);
-        return cartService.addCart(userId, flowerId);
+        return cartService.addToCart(userId, flowerId);
     }
 
     @GetMapping("view")
@@ -44,4 +44,10 @@ public class CartController {
         Integer userId = getUserIdFromToken(jwt);
         return cartService.viewCart(userId);
     }
+
+    @DeleteMapping("delete/{cartId}")
+    private ResponseEntity<String>deleteCart(@PathVariable Integer cartId){
+        return cartService.deleteCart(cartId);
+    }
+
 }
